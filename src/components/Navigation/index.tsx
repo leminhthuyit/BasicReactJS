@@ -8,7 +8,7 @@ const Navigation = () => {
       <ul>
         {listNav.map((item) => (
           <li key={item.id}>
-            <Link to={item.path}>{item.label}</Link>
+            <Link to={item.path} >{item.label}</Link>
           </li>
         ))}
       </ul>
