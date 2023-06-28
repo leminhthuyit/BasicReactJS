@@ -4,7 +4,7 @@ export interface InitState {
   jobs: Jod[];
 }
 
-interface Jod {
+export interface Jod {
   job: string;
   content: string;
 }

@@ -1,16 +1,61 @@
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import Header from "../../components/Header";
 import Navigation from "../../components/Navigation";
 import StoreContext from "../../store/context";
 import StyleTodolist from "./styled";
-import { Button, TextField } from "@mui/material";
+import { Button, IconButton, TextField } from "@mui/material";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
-import { SetJob } from "../../store/actions";
+import { SetJob, AddJob, EditJob } from "../../store/actions";
+import { InitState, Jod } from "../../store/utils/type";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ClearIcon from "@mui/icons-material/Clear";
+import SaveIcon from "@mui/icons-material/Save";
+
+interface Context {
+  state: InitState;
+  dispatch: (e?: any) => void;
+}
 
 const Todolist = () => {
-  const store = useContext(StoreContext);
+  const store = useContext<Context>(StoreContext);
   const { state, dispatch } = store;
-  const { job, content } = state;
+  const { job, content, jobs } = state;
+
+  const inputRef = useRef<any>({});
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [idJob, setIdJob] = useState<number | null>(null);
+
+  const handleAddJob = () => {
+    dispatch(AddJob({ job, content }));
+    dispatch(SetJob({ job: "", content: "" }));
+    inputRef.current.focus();
+  };
+
+  const handleEditJob = (data: Jod, index: number) => {
+    dispatch(SetJob({ ...data }));
+    setIsEdit(true);
+    setIdJob(index);
+  };
+
+  const handleSaveEdit = () => {
+    console.log("idJob", idJob);
+    if (!idJob && idJob !== 0) {
+      alert("Không tìm thấy ID công việc");
+      return;
+    }
+
+    dispatch(EditJob({ id: idJob, job, content }));
+    dispatch(SetJob({ job: "", content: "" }));
+    setIsEdit(false);
+    setIdJob(null);
+  };
+
+  const handleClearEdit = () => {
+    dispatch(SetJob({ job: "", content: "" }));
+    setIsEdit(false);
+    setIdJob(null);
+  };
 
   return (
     <StyleTodolist>
@@ -21,28 +66,48 @@ const Todolist = () => {
       </div>
       <div className="content">
         <div className="form_custom">
-          <Button variant="contained" startIcon={<NoteAddIcon />}>
-            Delete
+          <Button
+            variant="contained"
+            startIcon={<NoteAddIcon />}
+            onClick={handleAddJob}
+          >
+            Add
           </Button>
-          <div className="input">
+          <div className="input_form">
             <TextField
+              inputRef={inputRef}
               label="Công việc"
               variant="standard"
               value={job}
               onChange={(e) =>
-                dispatch(SetJob({ job: e.target.value, content: "" }))
+                dispatch(SetJob({ job: e.target.value, content }))
               }
+              sx={{ width: "30%" }}
             />
             <TextField
               label="Nội dung"
               variant="standard"
               value={content}
               onChange={(e) =>
-                dispatch(SetJob({ content: e.target.value, job: "" }))
+                dispatch(SetJob({ content: e.target.value, job }))
               }
+              sx={{ ml: 5, width: "40%" }}
             />
+
+            {isEdit && (
+              <div className="action_edit">
+                <IconButton onClick={handleSaveEdit}>
+                  <SaveIcon />
+                </IconButton>
+
+                <IconButton>
+                  <ClearIcon onClick={handleClearEdit} />
+                </IconButton>
+              </div>
+            )}
           </div>
         </div>
+
         <table>
           <thead>
             <tr>
@@ -53,12 +118,33 @@ const Todolist = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td style={{ textAlign: "center" }}>1</td>
-              <td style={{ textAlign: "center" }}>2</td>
-              <td style={{ textAlign: "center" }}>3</td>
-              <td style={{ textAlign: "center" }}>4</td>
-            </tr>
+            {jobs.map((item, index) => (
+              <tr key={index}>
+                <td style={{ textAlign: "center" }}>{index + 1}</td>
+                <td style={{ textAlign: "center" }}>{item.job}</td>
+                <td style={{ textAlign: "center" }}>{item.content}</td>
+                <td style={{ textAlign: "center" }}>
+                  <IconButton
+                    disabled={isEdit}
+                    onClick={() =>
+                      handleEditJob(
+                        {
+                          job: item.job,
+                          content: item.content,
+                        },
+                        index
+                      )
+                    }
+                  >
+                    <EditIcon />
+                  </IconButton>
+
+                  <IconButton disabled={isEdit}>
+                    <DeleteIcon />
+                  </IconButton>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

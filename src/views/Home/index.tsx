@@ -1,5 +1,6 @@
 import Header from "../../components/Header";
 import Navigation from "../../components/Navigation";
+import Auth from "../../pages/Auth";
 import StyledHome from "./styles/HomeStyled";
 
 const Home = () => {
@@ -14,4 +15,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Auth(Home);

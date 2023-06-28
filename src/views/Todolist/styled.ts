@@ -17,6 +17,18 @@ const StyleTodolist = styled.div`
   .content {
     padding: 20px;
 
+    .form_custom {
+      padding-bottom: 20px;
+
+      .input_form {
+        padding-top: 20px;
+
+        .action_edit {
+          display: inline-block;
+        }
+      }
+    }
+
     table {
       width: 100%;
       box-shadow: 0 0 8px 4px rgba(0, 0, 0, 0.2);
@@ -27,6 +39,10 @@ const StyleTodolist = styled.div`
     td {
       border: 1px solid #d7dbdd;
       border-collapse: collapse;
+    }
+
+    tr {
+      height: 30px;
     }
   }
 `;

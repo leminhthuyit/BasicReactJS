@@ -1,7 +1,7 @@
 {
   "name": "learn-typescript",
   "version": "0.1.0",
-  "homepage": "https://leminhthuyit.github.io/BasicReactJS",
+  "homepage": "https://leminhthuyit.github.io",
   "private": true,
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
