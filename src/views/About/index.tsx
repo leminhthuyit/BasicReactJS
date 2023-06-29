@@ -1,5 +1,6 @@
 import Header from "../../components/Header";
 import Navigation from "../../components/Navigation";
+import Auth from "../../pages/Auth";
 import StyleAbout from "./styled";
 
 const About = () => {
@@ -15,4 +16,4 @@ const About = () => {
   );
 };
 
-export default About;
+export default Auth(About);

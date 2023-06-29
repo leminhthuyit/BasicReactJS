@@ -8,8 +8,8 @@ const Auth = (Component: any) => {
     if (token) {
       return <Component />;
     } else {
-      // return <Navigate to="/login" />;
-      return <TestComponent />;
+      return <Navigate to="/login" />;
+      // return <TestComponent />;
     }
   };
 };

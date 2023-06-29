@@ -1,62 +1,54 @@
-import { useContext, useRef, useState } from "react";
+import ClearIcon from "@mui/icons-material/Clear";
+import NoteAddIcon from "@mui/icons-material/NoteAdd";
+import SaveIcon from "@mui/icons-material/Save";
+import { Button, IconButton, TextField } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
 import Header from "../../components/Header";
 import Navigation from "../../components/Navigation";
-import StoreContext from "../../store/context";
-import StyleTodolist from "./styled";
-import { Button, IconButton, TextField } from "@mui/material";
-import NoteAddIcon from "@mui/icons-material/NoteAdd";
-import { SetJob, AddJob, EditJob } from "../../store/actions";
+import Auth from "../../pages/Auth";
 import { InitState, Jod } from "../../store/utils/type";
+import StyleTodolist from "./styled";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setJobAction,
+  addJobAction,
+  editJobAction,
+  deleteJobAction,
+  fetchTodos,
+} from "../../redux/slice/todolistSlice";
+import { InitialState } from "../../redux/utils/type";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks/reduxHooks";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ClearIcon from "@mui/icons-material/Clear";
-import SaveIcon from "@mui/icons-material/Save";
-import Auth from "../../pages/Auth";
+import { helloSaga } from "../../redux/sagas";
+import { sagaMiddleware } from "../../redux/store";
 
-interface Context {
-  state: InitState;
-  dispatch: (e?: any) => void;
-}
+const TodolistRedux = () => {
+  const state = useAppSelector((state) => state.todolist);
+  const todos = useAppSelector((state) => state.todolist.todos);
 
-const Todolist = () => {
-  const store = useContext<Context>(StoreContext);
-  const { state, dispatch } = store;
   const { job, content, jobs } = state;
+  const dispatch = useAppDispatch();
 
   const inputRef = useRef<any>({});
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [idJob, setIdJob] = useState<number | null>(null);
+
+  useEffect(() => {
+    // dispatch(fetchTodos());
+    sagaMiddleware.run(helloSaga);
+  }, []);
 
   const handleAddJob = () => {
-    dispatch(AddJob({ job, content }));
-    dispatch(SetJob({ job: "", content: "" }));
+    dispatch(addJobAction({ job, content }));
+    dispatch(setJobAction({ job: "", content: "" }));
     inputRef.current.focus();
   };
 
-  const handleEditJob = (data: Jod, index: number) => {
-    dispatch(SetJob({ ...data }));
-    setIsEdit(true);
-    setIdJob(index);
-  };
+  const handleEditJob = (data: Jod, index: number) => {};
 
-  const handleSaveEdit = () => {
-    console.log("idJob", idJob);
-    if (!idJob && idJob !== 0) {
-      alert("Không tìm thấy ID công việc");
-      return;
-    }
+  const handleSaveEdit = () => {};
 
-    dispatch(EditJob({ id: idJob, job, content }));
-    dispatch(SetJob({ job: "", content: "" }));
-    setIsEdit(false);
-    setIdJob(null);
-  };
-
-  const handleClearEdit = () => {
-    dispatch(SetJob({ job: "", content: "" }));
-    setIsEdit(false);
-    setIdJob(null);
-  };
+  const handleClearEdit = () => {};
 
   return (
     <StyleTodolist>
@@ -81,7 +73,7 @@ const Todolist = () => {
               variant="standard"
               value={job}
               onChange={(e) =>
-                dispatch(SetJob({ job: e.target.value, content }))
+                dispatch(setJobAction({ job: e.target.value, content }))
               }
               sx={{ width: "30%" }}
             />
@@ -90,7 +82,7 @@ const Todolist = () => {
               variant="standard"
               value={content}
               onChange={(e) =>
-                dispatch(SetJob({ content: e.target.value, job }))
+                dispatch(setJobAction({ content: e.target.value, job }))
               }
               sx={{ ml: 5, width: "40%" }}
             />
@@ -153,4 +145,4 @@ const Todolist = () => {
   );
 };
 
-export default Auth(Todolist);
+export default Auth(TodolistRedux);

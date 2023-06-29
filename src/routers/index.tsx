@@ -3,6 +3,7 @@ import Home from "../views/Home";
 import Todolist from "../views/Todolist";
 import About from "../views/About";
 import Login from "../pages/Login";
+import TodolistRedux from "../views/TodolistRedux";
 
 // Layouts
 // const router = createBrowserRouter([
@@ -28,7 +29,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/todolist",
-    element: <Todolist />,
+    element: <TodolistRedux />,
   },
   {
     path: "/about",
